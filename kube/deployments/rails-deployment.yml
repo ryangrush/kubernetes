@@ -1,0 +1,127 @@
+
+# ---
+# apiVersion: apps/v1beta2
+# kind: Deployment
+# metadata:
+#   name: rails-deployment
+# spec:
+#   replicas: 1
+#   minReadySeconds: 5
+#   strategy:
+#     type: RollingUpdate
+#     rollingUpdate:
+#       maxSurge: 1
+#       maxUnavailable: 1  
+#   selector:
+#     matchLabels: 
+#       app: rails-container
+#   template:
+#     metadata:
+#       name: rails
+#       labels:
+#         app: rails-container
+#     spec:
+#       containers:
+#         - name: rails
+#           image: tzumby/rails-app-alpine:latest
+#           args: ["rake assets:precompile && rails s -p 3000 -b 0.0.0.0"]
+#           env:
+#             - name: POSTGRES_USER
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: sample-secret
+#                   key: POSTGRES_USER
+#             - name: POSTGRES_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: sample-secret
+#                   key: POSTGRES_PASSWORD
+#           ports:
+#             - containerPort: 3000
+
+
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: rails-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      run: rails-deployment
+  template:
+    metadata:
+      labels:
+        run: rails-deployment
+    spec:
+      containers:
+      - name: rails-deployment
+        image: tzumby/rails-app-alpine:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: shared-assets
+          mountPath: /data/public
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: sample-secret
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sample-secret
+              key: DB_PASSWORD
+        - name: DB_HOST
+          value: localhost
+        - name: DB_PORT
+          value: "3306"
+        - name: SECRET_KEY_BASE
+          value: "88d24294e8de572f8526f0f0fcc51c0a857b58aee01182303c8bed8fae8646831a350f323e1d090c43055e6466275500006bc312ea0ab287cc0cb611619666fb"
+      # - name: nginx
+      #   image: abevoelker/docker-nginx-alpine-brotli:mainline
+      #   imagePullPolicy: Always
+      #   args: ["nginx", "-c", "/etc/nginx/nginx.conf"]
+      #   ports:
+      #   - containerPort: 80
+      #   volumeMounts:
+      #   - name: nginx-conf
+      #     mountPath: /etc/nginx/nginx.conf
+      #     subPath: nginx.conf
+      #   - name: nginx-confd
+      #     mountPath: /etc/nginx/conf.d
+      #   - name: shared-assets
+      #     mountPath: /var/www/public
+      #   readinessProbe:
+      #     httpGet:
+      #       path: /pulse
+      #       port: 80
+      #     periodSeconds: 3
+      #     timeoutSeconds: 3
+      #     successThreshold: 1
+      #     failureThreshold: 10
+      volumes:
+      # - name: cloudsql-instance-credentials
+      #   secret:
+      #     secretName: cloudsql-instance-credentials
+      # - name: cloudsql
+      #   emptyDir:
+      # - name: ssl-certs
+      #   hostPath:
+      #     path: /etc/ssl/certs
+      # - name: nginx-conf
+      #   configMap:
+      #     name: nginx-conf
+      # - name: nginx-confd
+      #   configMap:
+      #     name: nginx-confd
+      - name: shared-assets
+        emptyDir: {}
