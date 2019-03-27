@@ -1,0 +1,14 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migrate
+spec:
+  activeDeadlineSeconds: 60
+  template:
+    spec: 
+      restartPolicy: Never
+      containers:
+        - name: db-migrate
+          image: ryangrush/blog_app:latest
+          command: ["/bin/sh rails db:migrate"]
