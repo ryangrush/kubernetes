@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: rails-container
-          image: ryangrush/blog_app:latest
+          image: ryangrush/blog_app:2.0.0
           ports:
             - containerPort: 3000
           env:
