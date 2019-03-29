@@ -32,9 +32,17 @@ spec:
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data/pgdata
-              name: postgres-pv
+            - mountPath: /db-data
+              name: postgres-volume
+          # volumeMounts:
+          #   - mountPath: /var/lib/postgresql/data/pgdata
+          #     name: postgres-pv
+
       volumes:
-        - name: postgres-pv
-          persistentVolumeClaim:
-            claimName: postgres-pvc
+        - name: postgres-volume
+          awsElasticBlockStore:
+            volumeID: vol-0a87e17331c9a6dea
+
+        # - name: postgres-pv
+        #   persistentVolumeClaim:
+        #     claimName: postgres-pvc
