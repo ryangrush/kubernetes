@@ -8,4 +8,4 @@ spec:
     - port: 5432
   selector:
     name: postgres-container
-  type: LoadBalancer
+  type: NodePort
