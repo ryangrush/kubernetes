@@ -35,7 +35,7 @@ spec:
       volumes:
         - name: postgres-volume
           awsElasticBlockStore:
-            volumeID: vol-0a87e17331c9a6dea
+            volumeID: vol-0cfe643a41f01f8cd
 
         # - name: postgres-pv
         #   persistentVolumeClaim:
