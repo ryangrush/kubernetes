@@ -29,15 +29,9 @@ spec:
                 secretKeyRef:
                   name: app-secret
                   key: POSTGRES_PASSWORD
-            - name: PGDATA
-              value: /var/lib/postgresql/data/pgdata
           volumeMounts:
             - mountPath: /db-data
               name: postgres-volume
-          # volumeMounts:
-          #   - mountPath: /var/lib/postgresql/data/pgdata
-          #     name: postgres-pv
-
       volumes:
         - name: postgres-volume
           awsElasticBlockStore:
