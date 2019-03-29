@@ -1,0 +1,76 @@
+# ---
+# apiVersion: apps/v1beta1
+# kind: Deployment
+# metadata:
+#   name: nginx-deployment
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       name: nginx-container
+#   template:
+#     metadata:
+#       labels:
+#         name: nginx-container
+#     spec:
+#       containers:
+#         - name: nginx-container
+#           image: nginx:1.15
+#           volumeMounts:
+#             - name: config-volume
+#               mountPath: /etc/nginx/conf.d
+#           ports:
+#             - containerPort: 80
+#       volumes:
+#         - name: config-volume
+#           configMap:
+#             name: nginx-config-map
+#             items:
+#               - key: reverseproxy.conf
+#                 path: reverseproxy.conf
+
+# ---
+# apiVersion: apps/v1beta1
+# kind: Deployment
+# metadata:
+#   name: nginx-deployment
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       name: nginx-container
+#   template:
+#     metadata:
+#       labels:
+#         name: nginx-container
+#     spec:
+#       containers:
+#         - name: nginx-container
+#           image: nginx:1.15
+#           volumeMounts:
+#             - name: config-volume
+#               mountPath: /etc/nginx/conf.d
+#           ports:
+#             - containerPort: 80
+#       volumes:
+#         - name: config-volume
+#           configMap:
+#             name: nginx-config-map
+#             items:
+#               - key: reverseproxy.conf
+#                 path: reverseproxy.conf
+
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: rails-demo-ing
+spec:
+  rules:
+    - host: rails-service.local
+      http:
+        paths:
+          - backend:
+              serviceName: rails-service
+              servicePort: 3000
+            path: /
